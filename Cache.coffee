@@ -20,9 +20,7 @@ Cache = new CacheManager = ->
       parameters.data = null
     Titanium.API.debug "CacheManager/ Creating a new connection for " + parameters.url + " (" + parameters.method + ")"
     loader = Titanium.Network.createHTTPClient()
-    loader.open parameters.method, parameters.url
-    loader.setRequestHeader "Cookie", getCookie()  if parameters.cookie == true and getCookie() != false
-    loader.setRequestHeader "User-Agent", parameters.userAgent
+
     loader.onload = (e) ->
       saveCookie loader.getResponseHeader("Set-Cookie")  if loader.getResponseHeader("Set-Cookie")?
       file = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory + Titanium.Filesystem.separator + "cache" + Titanium.Filesystem.separator + filename)
@@ -33,6 +31,9 @@ Cache = new CacheManager = ->
     loader.onerror = (e) ->
       dispatchError e.error
 
+    loader.open parameters.method, parameters.url
+    loader.setRequestHeader "Cookie", getCookie()  if parameters.cookie == true and getCookie() != false
+    loader.setRequestHeader "User-Agent", parameters.userAgent
     loader.send parameters.data
 
   dispatchError = (message) ->

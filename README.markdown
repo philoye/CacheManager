@@ -9,7 +9,13 @@ This is a fork of @dhayab's [original](https://github.com/dhayab/CacheManager).
 ## Changes from the original
 
 *  Repo no longer includes a sample app
-*  Written in coffeescript, a compiled javascript version is provided
+*  Now written in coffeescript, a compiled javascript version is also provided
+*  Adds support for `BasicAuth`
+*  Network errors fire events instead of logging
+*  `onload` fires 'ajaxLoadError' event if response.status is less than 200,
+   greater than 300 (unless 304)
+*  `onerror` fires 'ajaxNetworkError' event and includes the response status and
+   responseText, in addition to the raw error
 
 
 ## Usage

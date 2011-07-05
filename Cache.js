@@ -28,11 +28,6 @@
       }
       Titanium.API.debug("CacheManager/ Creating a new connection for " + parameters.url + " (" + parameters.method + ")");
       loader = Titanium.Network.createHTTPClient();
-      loader.open(parameters.method, parameters.url);
-      if (parameters.cookie === true && getCookie() !== false) {
-        loader.setRequestHeader("Cookie", getCookie());
-      }
-      loader.setRequestHeader("User-Agent", parameters.userAgent);
       loader.onload = function(e) {
         var file;
         if (loader.getResponseHeader("Set-Cookie") != null) {
@@ -48,6 +43,11 @@
       loader.onerror = function(e) {
         return dispatchError(e.error);
       };
+      loader.open(parameters.method, parameters.url);
+      if (parameters.cookie === true && getCookie() !== false) {
+        loader.setRequestHeader("Cookie", getCookie());
+      }
+      loader.setRequestHeader("User-Agent", parameters.userAgent);
       return loader.send(parameters.data);
     };
     dispatchError = function(message) {
