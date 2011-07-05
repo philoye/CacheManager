@@ -9,6 +9,7 @@ This is a fork of @dhayab's [original](https://github.com/dhayab/CacheManager).
 ## Changes from the original
 
 *  Repo no longer includes a sample app
+*  Written in coffeescript, a compiled javascript version is provided
 
 
 ## Usage
