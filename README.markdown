@@ -1,6 +1,10 @@
-__CacheManager__ is a script for Appcelerator Titanium Mobile. It is an extension to __Titanium.Network.HTTPClient__ that allows you to cache remote resources. Another advantage is retrieving the cached resource when the network connection is unavailable.
+__CacheManager__ is a script for Appcelerator Titanium Mobile. It is an extension
+to __Titanium.Network.HTTPClient__ that allows you to cache remote resources.
+Another advantage is retrieving the cached resource when the network connection
+is unavailable.
 
 This is a fork of @dhayab's [original](https://github.com/dhayab/CacheManager).
+
 
 ## Changes from the original
 
