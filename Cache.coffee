@@ -34,6 +34,8 @@ Cache = new CacheManager = ->
     loader.open parameters.method, parameters.url
     loader.setRequestHeader "Cookie", getCookie()  if parameters.cookie == true and getCookie() != false
     loader.setRequestHeader "User-Agent", parameters.userAgent
+    if parameters.auth?
+      loader.setRequestHeader('Authorization', 'Basic ' + Ti.Utils.base64encode( parameters.auth.username + ":" + parameters.auth.password ))
     loader.send parameters.data
 
   dispatchError = (message) ->
@@ -58,6 +60,7 @@ Cache = new CacheManager = ->
                   ttl: The time to live in seconds. Defaults to DEFAULT_TTL
                   cookie: Can be a boolean or a string containing the cookie value. Defaults to true
                   userAgent: Will override Titanium's default user agent in the current request.
+                  auth: Hash of `username` and `password`. Password will be properly encoded.
    ###
   @get = (parameters) ->
     if typeof (parameters) != "object"
@@ -66,6 +69,11 @@ Cache = new CacheManager = ->
       return dispatchError("<url> must be a string")
     if typeof (parameters.callback) != "function"
       return dispatchError("<callback> must be a function")
+    if typeof parameters.auth != 'undefined'
+      if typeof parameters.auth.username != 'string'
+        return dispatchError("<username> must be a string")
+      if typeof parameters.auth.password != 'string'
+        return dispatchError("<password> must be a string")
     if typeof (parameters.data) != "object" and typeof (parameters.data) != "string"
       parameters.data = null
     if parameters.method != "GET" and parameters.method != "POST"

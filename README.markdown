@@ -34,6 +34,7 @@ To use CacheManager just call this function
 *  **method (optional):** The HTTP method. Defaults to GET
 *  **ttl:** The time to live in seconds. Defaults to `60 seconds`.
 *  **cookie:** Can be a boolean or a string containing the cookie value. Defaults to true
+*  **auth:** Hash of `username` and `password`. Password will be properly encoded.
 
 
 ## Example
@@ -42,6 +43,9 @@ To use CacheManager just call this function
           url: 'http://gdata.youtube.com/feeds/api/videos',
           data: { author: 'appcelerator', alt: 'json', orderby: 'published' },
           ttl: 300,
+          auth:
+            username:  joeuser
+            password:  awesomepassword
           callback: function ( result ) {
             // Some stuff..
           }
