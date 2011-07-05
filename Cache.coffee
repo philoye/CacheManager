@@ -22,14 +22,20 @@ Cache = new CacheManager = ->
     loader = Titanium.Network.createHTTPClient()
 
     loader.onload = (e) ->
-      saveCookie loader.getResponseHeader("Set-Cookie")  if loader.getResponseHeader("Set-Cookie")?
-      file = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory + Titanium.Filesystem.separator + "cache" + Titanium.Filesystem.separator + filename)
-      file.deleteFile()  if file.exists()
-      file.write @responseText
-      parameters.callback @responseText, @location
+      if ( this.status >= 200 and this.status < 300 ) or this.status == 304
+        saveCookie loader.getResponseHeader("Set-Cookie")  if loader.getResponseHeader("Set-Cookie")?
+        file = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory + Titanium.Filesystem.separator + "cache" + Titanium.Filesystem.separator + filename)
+        file.deleteFile()  if file.exists()
+        file.write @responseText
+        parameters.callback @responseText, @location
+      else
+        C.log 'load error!'
+        error = { status: this.status, response: this.responseText}
+        Ti.App.fireEvent 'ajaxLoadError', error
 
     loader.onerror = (e) ->
-      dispatchError e.error
+      error = { status: this.status, response: this.responseText, error: e.error}
+      Ti.App.fireEvent 'ajaxNetworkError', error
 
     loader.open parameters.method, parameters.url
     loader.setRequestHeader "Cookie", getCookie()  if parameters.cookie == true and getCookie() != false

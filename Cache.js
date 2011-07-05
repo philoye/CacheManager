@@ -29,19 +29,34 @@
       Titanium.API.debug("CacheManager/ Creating a new connection for " + parameters.url + " (" + parameters.method + ")");
       loader = Titanium.Network.createHTTPClient();
       loader.onload = function(e) {
-        var file;
-        if (loader.getResponseHeader("Set-Cookie") != null) {
-          saveCookie(loader.getResponseHeader("Set-Cookie"));
+        var error, file;
+        if ((this.status >= 200 && this.status < 300) || this.status === 304) {
+          if (loader.getResponseHeader("Set-Cookie") != null) {
+            saveCookie(loader.getResponseHeader("Set-Cookie"));
+          }
+          file = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory + Titanium.Filesystem.separator + "cache" + Titanium.Filesystem.separator + filename);
+          if (file.exists()) {
+            file.deleteFile();
+          }
+          file.write(this.responseText);
+          return parameters.callback(this.responseText, this.location);
+        } else {
+          C.log('load error!');
+          error = {
+            status: this.status,
+            response: this.responseText
+          };
+          return Ti.App.fireEvent('ajaxLoadError', error);
         }
-        file = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory + Titanium.Filesystem.separator + "cache" + Titanium.Filesystem.separator + filename);
-        if (file.exists()) {
-          file.deleteFile();
-        }
-        file.write(this.responseText);
-        return parameters.callback(this.responseText, this.location);
       };
       loader.onerror = function(e) {
-        return dispatchError(e.error);
+        var error;
+        error = {
+          status: this.status,
+          response: this.responseText,
+          error: e.error
+        };
+        return Ti.App.fireEvent('ajaxNetworkError', error);
       };
       loader.open(parameters.method, parameters.url);
       if (parameters.cookie === true && getCookie() !== false) {
