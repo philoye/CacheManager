@@ -2,8 +2,9 @@
   var Cache, CacheManager, root;
   root = this;
   Cache = new (CacheManager = function() {
-    var DEFAULT_TTL, cacheDirectory, create, dispatchError, getCookie, saveCookie;
+    var DEFAULT_TIMEOUT, DEFAULT_TTL, cacheDirectory, create, dispatchError, getCookie, saveCookie;
     DEFAULT_TTL = 60;
+    DEFAULT_TIMEOUT = 30;
     cacheDirectory = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory + Titanium.Filesystem.separator + "cache");
     if (!cacheDirectory.exists()) {
       cacheDirectory.createDirectory();
@@ -28,6 +29,7 @@
       }
       Titanium.API.debug("CacheManager/ Creating a new connection for " + parameters.url + " (" + parameters.method + ")");
       loader = Titanium.Network.createHTTPClient();
+      loader.setTimeout(parameters.timeout * 1000);
       loader.onload = function(e) {
         var error, file;
         if ((this.status >= 200 && this.status < 300) || this.status === 304) {
@@ -92,6 +94,7 @@
                       cookie: Can be a boolean or a string containing the cookie value. Defaults to true
                       userAgent: Will override Titanium's default user agent in the current request.
                       auth: Hash of `username` and `password`. Password will be properly encoded.
+                      timeout: The time in seconds to wait before giving up. Defaults to DEFAULT_TIMEOUT.
        */
     this.get = function(parameters) {
       var file, filename, hash;
@@ -120,6 +123,9 @@
       }
       if (typeof parameters.ttl !== "number" || parameters.ttl < 0) {
         parameters.ttl = DEFAULT_TTL;
+      }
+      if (typeof parameters.timeout !== "number" || parameters.timeout < 0) {
+        parameters.timeout = DEFAULT_TIMEOUT;
       }
       if (typeof parameters.cookie === "string") {
         saveCookie(parameters.cookie);

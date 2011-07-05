@@ -2,7 +2,9 @@ root = this
 
 Cache = new CacheManager = ->
 
-  DEFAULT_TTL = 60 # seconds
+  DEFAULT_TTL     = 60 # seconds
+  DEFAULT_TIMEOUT = 30 # seconds
+
 
   ## Initialization. Will create a directory named 'cache' to store cached resources
   cacheDirectory = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory + Titanium.Filesystem.separator + "cache")
@@ -20,6 +22,7 @@ Cache = new CacheManager = ->
       parameters.data = null
     Titanium.API.debug "CacheManager/ Creating a new connection for " + parameters.url + " (" + parameters.method + ")"
     loader = Titanium.Network.createHTTPClient()
+    loader.setTimeout(parameters.timeout * 1000)
 
     loader.onload = (e) ->
       if ( this.status >= 200 and this.status < 300 ) or this.status == 304
@@ -67,6 +70,7 @@ Cache = new CacheManager = ->
                   cookie: Can be a boolean or a string containing the cookie value. Defaults to true
                   userAgent: Will override Titanium's default user agent in the current request.
                   auth: Hash of `username` and `password`. Password will be properly encoded.
+                  timeout: The time in seconds to wait before giving up. Defaults to DEFAULT_TIMEOUT.
    ###
   @get = (parameters) ->
     if typeof (parameters) != "object"
@@ -86,6 +90,8 @@ Cache = new CacheManager = ->
       parameters.method = "GET"
     if typeof (parameters.ttl) != "number" or parameters.ttl < 0
       parameters.ttl = DEFAULT_TTL
+    if typeof (parameters.timeout) != "number" or parameters.timeout < 0
+      parameters.timeout = DEFAULT_TIMEOUT
     if typeof (parameters.cookie) == "string"
       saveCookie parameters.cookie
       parameters.cookie = true

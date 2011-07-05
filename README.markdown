@@ -16,6 +16,7 @@ This is a fork of @dhayab's [original](https://github.com/dhayab/CacheManager).
    greater than 300 (unless 304)
 *  `onerror` fires 'ajaxNetworkError' event and includes the response status and
    responseText, in addition to the raw error
+*  Add support for configurable network timeout
 
 
 ## Usage
@@ -35,6 +36,7 @@ To use CacheManager just call this function
 *  **ttl:** The time to live in seconds. Defaults to `60 seconds`.
 *  **cookie:** Can be a boolean or a string containing the cookie value. Defaults to true
 *  **auth:** Hash of `username` and `password`. Password will be properly encoded.
+*  **timeout:** The time in seconds to wait before giving up. Defaults to 30 seconds.
 
 
 ## Example
@@ -43,6 +45,7 @@ To use CacheManager just call this function
           url: 'http://gdata.youtube.com/feeds/api/videos',
           data: { author: 'appcelerator', alt: 'json', orderby: 'published' },
           ttl: 300,
+          timeout: 10,
           auth:
             username:  joeuser
             password:  awesomepassword
