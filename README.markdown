@@ -17,6 +17,7 @@ This is a fork of @dhayab's [original](https://github.com/dhayab/CacheManager).
 *  `onerror` fires 'ajaxNetworkError' event and includes the response status and
    responseText, in addition to the raw error
 *  Add support for configurable network timeout
+*  Add support for for an optional error callback
 
 
 ## Usage
@@ -31,6 +32,8 @@ To use CacheManager just call this function
 *  **Cache.get();** # needs a parameters dictionary with the following values
 *  **url:** The URL for the request
 *  **callback:** The function to be called upon a successful response
+*  **error (optional):** The function to be called upon an error. If not set,
+   `ajaxLoadError` and `ajaxNetworkError` events are fired.
 *  **data (optional):** The data to send in the request. Can either be null, dictionary or string
 *  **method (optional):** The HTTP method. Defaults to GET
 *  **ttl:** The time to live in seconds. Defaults to `60 seconds`.
@@ -51,6 +54,9 @@ To use CacheManager just call this function
             password:  awesomepassword
           callback: function ( result ) {
             // Some stuff..
+          },
+          error: function (error) {
+            // Some other stuff...
           }
         });
 

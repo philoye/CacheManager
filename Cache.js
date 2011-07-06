@@ -53,12 +53,16 @@
       };
       loader.onerror = function(e) {
         var error;
-        error = {
-          status: this.status,
-          response: this.responseText,
-          error: e.error
-        };
-        return Ti.App.fireEvent('ajaxNetworkError', error);
+        if (parameters.error != null) {
+          return parameters.error(e);
+        } else {
+          error = {
+            status: this.status,
+            response: this.responseText,
+            error: e.error
+          };
+          return Ti.App.fireEvent('ajaxNetworkError', error);
+        }
       };
       loader.open(parameters.method, parameters.url);
       if (parameters.cookie === true && getCookie() !== false) {
@@ -106,6 +110,13 @@
       }
       if (typeof parameters.callback !== "function") {
         return dispatchError("<callback> must be a function");
+      }
+      if (typeof parameters.error !== 'undefined') {
+        if (typeof parameters.error !== 'function') {
+          return dispatchError("<error> if defined, must be a function");
+        } else {
+          parameters.error = null;
+        }
       }
       if (typeof parameters.auth !== 'undefined') {
         if (typeof parameters.auth.username !== 'string') {

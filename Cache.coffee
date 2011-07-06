@@ -37,8 +37,11 @@ Cache = new CacheManager = ->
         Ti.App.fireEvent 'ajaxLoadError', error
 
     loader.onerror = (e) ->
-      error = { status: this.status, response: this.responseText, error: e.error}
-      Ti.App.fireEvent 'ajaxNetworkError', error
+      if parameters.error?
+        parameters.error(e)
+      else
+        error = { status: this.status, response: this.responseText, error: e.error}
+        Ti.App.fireEvent 'ajaxNetworkError', error
 
     loader.open parameters.method, parameters.url
     loader.setRequestHeader "Cookie", getCookie()  if parameters.cookie == true and getCookie() != false
@@ -79,6 +82,11 @@ Cache = new CacheManager = ->
       return dispatchError("<url> must be a string")
     if typeof (parameters.callback) != "function"
       return dispatchError("<callback> must be a function")
+    if typeof parameters.error != 'undefined'
+      if typeof parameters.error != 'function'
+        return dispatchError("<error> if defined, must be a function")
+      else
+        parameters.error = null
     if typeof parameters.auth != 'undefined'
       if typeof parameters.auth.username != 'string'
         return dispatchError("<username> must be a string")
