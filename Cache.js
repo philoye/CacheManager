@@ -43,7 +43,6 @@
           file.write(this.responseText);
           return parameters.callback(this.responseText, this.location);
         } else {
-          C.log('load error!');
           error = {
             status: this.status,
             response: this.responseText

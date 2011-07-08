@@ -32,7 +32,6 @@ Cache = new CacheManager = ->
         file.write @responseText
         parameters.callback @responseText, @location
       else
-        C.log 'load error!'
         error = { status: this.status, response: this.responseText}
         Ti.App.fireEvent 'ajaxLoadError', error
 
