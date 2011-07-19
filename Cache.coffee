@@ -36,11 +36,14 @@ Cache = new CacheManager = ->
         Ti.App.fireEvent 'ajaxLoadError', error
 
     loader.onerror = (e) ->
-      if parameters.error?
-        parameters.error(e)
+      if not Titanium.Network.online
+        Ti.app.fireEvent 'ajaxOffline', e
       else
-        error = { status: this.status, response: this.responseText, error: e.error}
-        Ti.App.fireEvent 'ajaxNetworkError', error
+        if parameters.error?
+          parameters.error(e)
+        else
+          error = { status: this.status, response: this.responseText, error: e.error}
+          Ti.App.fireEvent 'ajaxNetworkError', error
 
     loader.open parameters.method, parameters.url
     loader.setRequestHeader "Cookie", getCookie()  if parameters.cookie == true and getCookie() != false

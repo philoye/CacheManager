@@ -52,15 +52,19 @@
       };
       loader.onerror = function(e) {
         var error;
-        if (parameters.error != null) {
-          return parameters.error(e);
+        if (!Titanium.Network.online) {
+          return Ti.app.fireEvent('ajaxOffline', e);
         } else {
-          error = {
-            status: this.status,
-            response: this.responseText,
-            error: e.error
-          };
-          return Ti.App.fireEvent('ajaxNetworkError', error);
+          if (parameters.error != null) {
+            return parameters.error(e);
+          } else {
+            error = {
+              status: this.status,
+              response: this.responseText,
+              error: e.error
+            };
+            return Ti.App.fireEvent('ajaxNetworkError', error);
+          }
         }
       };
       loader.open(parameters.method, parameters.url);
