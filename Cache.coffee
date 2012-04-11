@@ -48,6 +48,7 @@ Cache = new CacheManager = ->
     loader.open parameters.method, parameters.url
     loader.setRequestHeader "Cookie", getCookie()  if parameters.cookie == true and getCookie() != false
     loader.setRequestHeader "User-Agent", parameters.userAgent
+    loader.setRequestHeader "content-type", parameters.contentType if parameters.contentType?
     if parameters.auth?
       loader.setRequestHeader('Authorization', 'Basic ' + Ti.Utils.base64encode( parameters.auth.username + ":" + parameters.auth.password ))
     loader.send parameters.data
@@ -71,11 +72,12 @@ Cache = new CacheManager = ->
                   callback: The function to be called upon a successful response
                   data (optional): The data to send in the request. Can either be null, dictionary or string
                   method (optional): The HTTP method. Defaults to "GET"
-                  ttl: The time to live in seconds. Defaults to DEFAULT_TTL
-                  cookie: Can be a boolean or a string containing the cookie value. Defaults to true
-                  userAgent: Will override Titanium's default user agent in the current request.
-                  auth: Hash of `username` and `password`. Password will be properly encoded.
-                  timeout: The time in seconds to wait before giving up. Defaults to DEFAULT_TIMEOUT.
+                  ttl (optional): The time to live in seconds. Defaults to DEFAULT_TTL
+                  cookie (optional): Can be a boolean or a string containing the cookie value. Defaults to true
+                  userAgent (optional): Will override Titanium's default user agent in the current request.
+                  contentType (optional): The content type of the request
+                  auth (optional): Hash of `username` and `password`. Password will be properly encoded.
+                  timeout (optional): The time in seconds to wait before giving up. Defaults to DEFAULT_TIMEOUT.
    ###
   @get = (parameters) ->
     if typeof (parameters) != "object"
